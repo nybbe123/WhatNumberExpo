@@ -23,14 +23,15 @@ const s = StyleSheet.create({
   goalItem: {
     margin: 8,
     borderRadius: 8,
-    backgroundColor: '#5e0acc',
+    borderWidth: 1.5,
+    borderColor: '#fafafa',
   },
   pressedItem: {
-    backgroundColor: 'black',
-    borderRadius: 8,
+    opacity: 0.5,
   },
   goalItemText: {
     color: '#fafafa',
-    padding: 8,
+    padding: 16,
+    fontSize: 17,
   },
 })
