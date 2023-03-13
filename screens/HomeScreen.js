@@ -1,8 +1,10 @@
 import { StyleSheet, Text, Pressable, View } from 'react-native'
+import { LinearGradient } from 'expo-linear-gradient'
+import PrimaryBtn from '../components/PrimaryBtn'
 
 export default function HomeScreen({ navigation }) {
   return (
-    <View style={s.container}>
+    <LinearGradient style={s.container} colors={['#fff', '#fff']}>
       <View style={s.titleContainer}>
         <Text style={s.title}>What Number</Text>
         <Text style={s.titleBread}>
@@ -10,13 +12,11 @@ export default function HomeScreen({ navigation }) {
           your phone gets ten attempts to guess correctly.
         </Text>
       </View>
-      <Pressable
-        style={s.primaryBtn}
+      <PrimaryBtn
+        title="New Game"
         onPress={() => navigation.navigate('NewGame')}
-      >
-        <Text style={s.primaryBtnText}>Start Game</Text>
-      </Pressable>
-    </View>
+      />
+    </LinearGradient>
   )
 }
 
@@ -45,15 +45,5 @@ const s = StyleSheet.create({
     fontSize: 16,
     lineHeight: 23,
     fontWeight: 300,
-  },
-  primaryBtn: {
-    backgroundColor: '#333',
-    paddingHorizontal: 40,
-    paddingVertical: 20,
-    borderRadius: 6,
-  },
-  primaryBtnText: {
-    color: '#fafafa',
-    fontSize: 19,
   },
 })
