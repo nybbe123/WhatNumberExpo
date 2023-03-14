@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Alert, StyleSheet, Text, View } from 'react-native'
+import { Alert, Modal, Pressable, StyleSheet, Text, View } from 'react-native'
 import PrimaryBtn from '../components/PrimaryBtn'
 
 function generateRandomNum(min, max, exclude) {
@@ -20,6 +20,8 @@ export default function GameScreen({ navigation, route }) {
   const initialGuess = generateRandomNum(1, 100, playerNumber)
   const [currentGuess, setCurrentGuess] = useState(initialGuess)
   const [tries, setTries] = useState(1)
+  const [modalIsOpen, setModalIsOpen] = useState(false)
+  const [winner, setWinner] = useState('')
 
   function nextGuessHandler(direction) {
     if (
@@ -29,8 +31,7 @@ export default function GameScreen({ navigation, route }) {
       Alert.alert('Dont lie!', 'You know that this is wrong...', [
         { text: 'Sorry!', style: 'cancel' },
       ])
-    }
-    if (direction === 'lower') {
+    } else if (direction === 'lower') {
       maxBoundary = currentGuess
     } else {
       minBoundary = currentGuess + 1
@@ -45,20 +46,35 @@ export default function GameScreen({ navigation, route }) {
   }
 
   useEffect(() => {
-    if (tries >= 10) {
-      console.log('YOU WIN')
+    if (tries >= 7) {
+      setWinner('PLAYER')
+      setModalIsOpen(true)
     } else if (currentGuess == playerNumber) {
-      console.log('PHONE WINS')
-    } else return
+      setWinner('PHONE')
+      setModalIsOpen(true)
+    } else {
+      setModalIsOpen(false)
+    }
   }, [tries, currentGuess])
+
+  function handleGameOver() {
+    minBoundary = 1
+    maxBoundary = 100
+    setTries(1)
+    setWinner('')
+    setModalIsOpen(false)
+    navigation.navigate('Home')
+  }
 
   return (
     <View style={s.container}>
-      <Text>Opponent's Guess</Text>
-      <Text>{currentGuess}</Text>
-      <View>
-        <Text>Higher or Lower?</Text>
-        <View>
+      <View style={s.titleContainer}>
+        <Text style={s.titleText}>Opponent's Guess</Text>
+        <Text style={s.currentGuessText}>{currentGuess}</Text>
+      </View>
+      <View style={s.chooseContainer}>
+        <Text style={s.chooseText}>Higher or Lower?</Text>
+        <View style={s.btnContainer}>
           <PrimaryBtn
             title="+"
             onPress={nextGuessHandler.bind(this, 'higher')}
@@ -69,6 +85,16 @@ export default function GameScreen({ navigation, route }) {
           />
         </View>
       </View>
+      <Modal visible={modalIsOpen}>
+        <View style={s.modal}>
+          {winner === 'PLAYER' ? (
+            <Text style={s.gameOverText}>You win!</Text>
+          ) : (
+            <Text style={s.gameOverText}>Phone win!</Text>
+          )}
+          <PrimaryBtn title="Back home" onPress={handleGameOver} />
+        </View>
+      </Modal>
     </View>
   )
 }
@@ -78,5 +104,41 @@ const s = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  titleContainer: {
+    position: 'absolute',
+    top: 100,
+    width: '100%',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  titleText: {
+    fontSize: 19,
+  },
+  currentGuessText: {
+    fontSize: 32,
+  },
+  chooseContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  chooseText: {
+    marginBottom: 15,
+    fontSize: 19,
+  },
+  btnContainer: {
+    flexDirection: 'row',
+    gap: 15,
+  },
+  modal: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  gameOverText: {
+    position: 'absolute',
+    top: 100,
+    fontSize: 32,
   },
 })
